@@ -22,8 +22,11 @@ void setup() {
 void loop() {
   float humedad = dht.readHumidity();
   float temperatura = dht.readTemperature();
-  long duration;
+  long duracion;
   float distancia;
+  const float distancia_maxima = 20;
+  const float distancia_minima = 2;
+  float porcentaje;
   int inByte = 0; 
 
   digitalWrite(trigPin, LOW);
@@ -31,8 +34,9 @@ void loop() {
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  distancia = (duration / 2) / 29.1;
+  duracion = pulseIn(echoPin, HIGH);
+  distancia = (duracion / 2) / 29.1;
+  porcentaje = 100 - ((distancia - distancia_minima) / (distancia_maxima - distancia_minima)) * 100;
 
   if (BTSerial.available()) {
     while (BTSerial.available()) {
@@ -46,7 +50,7 @@ void loop() {
     }
   }
 
-  if (distancia < 15) {
+  if (porcentaje < 20 || porcentaje > 90) {
     digitalWrite(relePin, HIGH);
   } else {
     digitalWrite(relePin, LOW);
