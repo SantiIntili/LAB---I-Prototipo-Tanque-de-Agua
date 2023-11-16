@@ -3,18 +3,19 @@
 
 #define DHTPIN 7
 #define DHTTYPE DHT11
+#define trigPin 8
+#define echoPin 9
+#define relePin 13
 
 DHT dht(DHTPIN, DHTTYPE);
 SoftwareSerial BTSerial(11, 10); 
-
-const int trigPin = 8; 
-const int echoPin = 9; 
-const int relePin = 13; 
 
 void setup() {
   Serial.begin(9600);
   BTSerial.begin(115200);
   dht.begin();
+  pinMode (trigPin, OUTPUT);
+  pinMode (echoPin, INPUT);
   pinMode(relePin, OUTPUT);
   digitalWrite(relePin, LOW); 
 }
@@ -28,14 +29,12 @@ void loop() {
   const float distancia_minima = 2;
   float porcentaje;
   int inByte = 0; 
-
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
+  
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
+  delay(10);
   digitalWrite(trigPin, LOW);
   duracion = pulseIn(echoPin, HIGH);
-  distancia = (duracion / 2) / 29.1;
+  distancia = (duracion / 58.2);
   porcentaje = 100 - ((distancia - distancia_minima) / (distancia_maxima - distancia_minima)) * 100;
 
   if (BTSerial.available()) {
@@ -69,5 +68,5 @@ void loop() {
   Serial.print(distancia);
   Serial.println(" cm");
 
-  delay(2000);
+  delay(1500);
 }
