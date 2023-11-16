@@ -49,13 +49,13 @@ void loop() {
     }
   }
 
-  if (porcentaje < 20 || porcentaje > 90) {
+  if (porcentaje >= 90) {
     digitalWrite(relePin, HIGH);
   } else {
     digitalWrite(relePin, LOW);
   }
 
-  BTSerial.print(distancia);
+  BTSerial.print(porcentaje);
   BTSerial.print(";");
   BTSerial.print(temperatura);
   BTSerial.print(";");
