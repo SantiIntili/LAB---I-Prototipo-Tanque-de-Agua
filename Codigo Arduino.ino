@@ -6,6 +6,7 @@
 #define trigPin 8
 #define echoPin 9
 #define relePin 13
+#define relePin2 6
 
 DHT dht(DHTPIN, DHTTYPE);
 SoftwareSerial BTSerial(11, 10); 
@@ -17,6 +18,7 @@ void setup() {
   pinMode (trigPin, OUTPUT);
   pinMode (echoPin, INPUT);
   pinMode(relePin, OUTPUT);
+  pinMode(relePin2, OUTPUT);
   digitalWrite(relePin, LOW); 
 }
 
@@ -25,7 +27,7 @@ void loop() {
   float temperatura = dht.readTemperature();
   long duracion;
   float distancia;
-  const float distancia_maxima = 20;
+  const float distancia_maxima = 23.4;
   const float distancia_minima = 2;
   float porcentaje;
   int inByte = 0; 
@@ -46,13 +48,23 @@ void loop() {
       } else {
         digitalWrite(relePin, LOW);
       }
+      if (receivedChar == '2') {
+        digitalWrite(relePin2, HIGH);
+        delay(5000);
+      } else {
+        digitalWrite(relePin2, LOW);
+      }
     }
   }
 
-  if (porcentaje >= 90) {
+  if (porcentaje <= 20) {
     digitalWrite(relePin, HIGH);
-  } else {
+    delay(3000);
+    digitalWrite(relePin2, LOW);
+  } else if (porcentaje >= 35) {
     digitalWrite(relePin, LOW);
+    digitalWrite(relePin2, HIGH);
+    delay(5000);
   }
 
   BTSerial.print(porcentaje);
